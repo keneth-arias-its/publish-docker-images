@@ -1,0 +1,184 @@
+name: GitHub Classroom Autograding
+
+on:
+  push:
+    branches:
+      - welcome-workflow
+      - main
+  workflow_dispatch:
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check if docker-publish.yml exists
+      id: check_file
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for docker-publish.yml'
+        command: 'ls .github/workflows/docker-publish.yml'
+        input: ''
+        expected-output: 'docker-publish.yml'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for Docker Login
+      id: check_login
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for Docker Login'
+        command: 'grep "docker/login-action" .github/workflows/docker-publish.yml'
+        input: ''
+        expected-output: 'docker/login-action'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for Docker Setup Buildx
+      id: check_buildx
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for Docker Setup Buildx'
+        command: 'grep "docker/setup-buildx-action" .github/workflows/docker-publish.yml'
+        input: ''
+        expected-output: 'docker/setup-buildx-action'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for Docker Build and Push
+      id: check_build_push
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for Docker Build and Push'
+        command: 'grep "docker/build-push-action" .github/workflows/docker-publish.yml'
+        input: ''
+        expected-output: 'docker/build-push-action'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for Docker Setup QEMU
+      id: check_qemu
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for Docker Setup QEMU'
+        command: 'grep "docker/setup-qemu-action" .github/workflows/docker-publish.yml'
+        input: ''
+        expected-output: 'docker/setup-qemu-action'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for Docker Metadata
+      id: check_metadata
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for Docker Metadata'
+        command: 'grep "docker/metadata-action" .github/workflows/docker-publish.yml'
+        input: ''
+        expected-output: 'docker/metadata-action'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for tags trigger
+      id: check_tags
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for tags trigger'
+        command: 'grep "tags:" .github/workflows/docker-publish.yml'
+        input: ''
+        expected-output: 'tags:'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for pull_request trigger
+      id: check_pr
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for pull_request trigger'
+        command: 'grep "pull_request:" .github/workflows/docker-publish.yml'
+        input: ''
+        expected-output: 'pull_request:'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for workflow_dispatch trigger
+      id: check_dispatch
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for workflow_dispatch trigger'
+        command: 'grep "workflow_dispatch:" .github/workflows/docker-publish.yml'
+        input: ''
+        expected-output: 'workflow_dispatch:'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for Metadata Outputs Usage
+      id: check_meta_out
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for Metadata Outputs Usage'
+        command: 'grep "steps.meta.outputs.tags" .github/workflows/docker-publish.yml'
+        input: ''
+        expected-output: 'steps.meta.outputs.tags'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for runs-on
+      id: check_runs_on
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for runs-on'
+        command: 'grep "runs-on: ubuntu-latest" .github/workflows/docker-publish.yml'
+        input: ''
+        expected-output: 'runs-on: ubuntu-latest'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for tags pattern
+      id: check_tags_pattern
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for tags pattern'
+        command: 'grep "v\*" .github/workflows/docker-publish.yml'
+        input: ''
+        expected-output: 'v*'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for High Score
+      id: check_high_score
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for High Score'
+        command: 'grep "High Score" src/index.html'
+        input: ''
+        expected-output: 'High Score'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      with:
+        runners: 'check_file,check_login,check_buildx,check_build_push,check_qemu,check_metadata,check_tags,check_pr,check_dispatch,check_meta_out,check_runs_on,check_tags_pattern,check_high_score'
+      env:
+        CHECK_FILE_RESULTS: "${{steps.check_file.outputs.result}}"
+        CHECK_LOGIN_RESULTS: "${{steps.check_login.outputs.result}}"
+        CHECK_BUILDX_RESULTS: "${{steps.check_buildx.outputs.result}}"
+        CHECK_BUILD_PUSH_RESULTS: "${{steps.check_build_push.outputs.result}}"
+        CHECK_QEMU_RESULTS: "${{steps.check_qemu.outputs.result}}"
+        CHECK_METADATA_RESULTS: "${{steps.check_metadata.outputs.result}}"
+        CHECK_TAGS_RESULTS: "${{steps.check_tags.outputs.result}}"
+        CHECK_PR_RESULTS: "${{steps.check_pr.outputs.result}}"
+        CHECK_DISPATCH_RESULTS: "${{steps.check_dispatch.outputs.result}}"
+        CHECK_META_OUT_RESULTS: "${{steps.check_meta_out.outputs.result}}"
+        CHECK_RUNS_ON_RESULTS: "${{steps.check_runs_on.outputs.result}}"
+        CHECK_TAGS_PATTERN_RESULTS: "${{steps.check_tags_pattern.outputs.result}}"
+        CHECK_HIGH_SCORE_RESULTS: "${{steps.check_high_score.outputs.result}}"
+
