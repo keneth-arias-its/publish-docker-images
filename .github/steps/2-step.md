@@ -52,7 +52,7 @@ Facciamo il pull di quell'immagine ed eseguiamola nel tuo codespace per vedere i
 
    > ✨ Fai uno screenshot del gioco in esecuzione, salvalo sul tuo computer e aggiungilo al repository.
 
-1. Salva uno screenshot del gioco in esecuzione, caricalo come `stackoverflown.png` nel repository.
+1. Salva uno screenshot del gioco in esecuzione, caricalo come un file `png` (ad esempio `stackoverflown.png`) nel repository.
 
 1. Puoi fermare l'esecuzione dell'applicazione premendo `Ctrl + C` nel terminale
 

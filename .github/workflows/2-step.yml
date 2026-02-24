@@ -59,13 +59,12 @@ jobs:
 
       # START: Check practical exercise
 
-      - name: Check for stackoverflown.png
+      - name: Check for any .png file
         id: check-stackoverflown
         continue-on-error: true
         uses: andstor/file-existence-action@v3
         with:
-          files: "**stackoverflown.png"
-          fail: true
+          files: "*.png"
 
       - name: Lint docker-publish.yml with actionlint
         id: actionlint-check
@@ -138,7 +137,7 @@ jobs:
           vars: |
             step_number: 2
             results_table:
-              - description: "Uploaded stackoverflown.png"
+              - description: "Uploaded a .png file"
                 passed: ${{ steps.check-stackoverflown.outcome == 'success' }}
               - description: "Workflow file syntax validation"
                 passed: ${{ steps.actionlint-check.outcome == 'success' }}

@@ -64,14 +64,14 @@ jobs:
         comparison-method: 'contains'
         max-score: 1
 
-    - name: Check for stackoverflown.png file
+    - name: Check for any .png file
       id: check_stackoverflown
       uses: classroom-resources/autograding-io-grader@v1
       with:
-        test-name: 'Check for stackoverflown.png file'
-        command: 'ls stackoverflown.png'
+        test-name: 'Check for any .png file'
+        command: 'find . -type f -name "*.png"'
         input: ''
-        expected-output: 'stackoverflown.png'
+        expected-output: '.png'
         comparison-method: 'contains'
         max-score: 1
 
