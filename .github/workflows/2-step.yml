@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - ".github/workflows/docker-publish.yml"
+      - "**/*.png"
 
 permissions:
   contents: read
@@ -24,6 +25,7 @@ jobs:
   check_step_work:
     name: Check step work
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [find_exercise]
     env:
       ISSUE_REPOSITORY: ${{ github.repository }}
@@ -160,6 +162,7 @@ jobs:
     name: Post next step content
     needs: [find_exercise, check_step_work]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       ISSUE_REPOSITORY: ${{ github.repository }}
       ISSUE_NUMBER: ${{ needs.find_exercise.outputs.issue-number }}

@@ -15,6 +15,7 @@ permissions:
 jobs:
   run-autograding-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: github.actor != 'github-classroom[bot]'
     steps:
     - name: Checkout code
@@ -25,7 +26,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for docker-publish.yml'
-        command: 'ls .github/workflows/docker-publish.yml'
+        command: 'test -f .github/workflows/docker-publish.yml && echo docker-publish.yml || true'
         input: ''
         expected-output: 'docker-publish.yml'
         comparison-method: 'contains'
@@ -36,7 +37,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for Docker Login'
-        command: 'grep "docker/login-action" .github/workflows/docker-publish.yml'
+        command: 'grep -F "docker/login-action" .github/workflows/docker-publish.yml 2>/dev/null || true'
         input: ''
         expected-output: 'docker/login-action'
         comparison-method: 'contains'
@@ -47,7 +48,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for Docker Setup Buildx'
-        command: 'grep "docker/setup-buildx-action" .github/workflows/docker-publish.yml'
+        command: 'grep -F "docker/setup-buildx-action" .github/workflows/docker-publish.yml 2>/dev/null || true'
         input: ''
         expected-output: 'docker/setup-buildx-action'
         comparison-method: 'contains'
@@ -58,7 +59,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for Docker Build and Push'
-        command: 'grep "docker/build-push-action" .github/workflows/docker-publish.yml'
+        command: 'grep -F "docker/build-push-action" .github/workflows/docker-publish.yml 2>/dev/null || true'
         input: ''
         expected-output: 'docker/build-push-action'
         comparison-method: 'contains'
@@ -80,7 +81,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for Docker Setup QEMU'
-        command: 'grep "docker/setup-qemu-action" .github/workflows/docker-publish.yml'
+        command: 'grep -F "docker/setup-qemu-action" .github/workflows/docker-publish.yml 2>/dev/null || true'
         input: ''
         expected-output: 'docker/setup-qemu-action'
         comparison-method: 'contains'
@@ -91,7 +92,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for Docker Metadata'
-        command: 'grep "docker/metadata-action" .github/workflows/docker-publish.yml'
+        command: 'grep -F "docker/metadata-action" .github/workflows/docker-publish.yml 2>/dev/null || true'
         input: ''
         expected-output: 'docker/metadata-action'
         comparison-method: 'contains'
@@ -102,7 +103,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for tags trigger'
-        command: 'grep "tags:" .github/workflows/docker-publish.yml'
+        command: 'grep -F "tags:" .github/workflows/docker-publish.yml 2>/dev/null || true'
         input: ''
         expected-output: 'tags:'
         comparison-method: 'contains'
@@ -113,7 +114,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for pull_request trigger'
-        command: 'grep "pull_request:" .github/workflows/docker-publish.yml'
+        command: 'grep -F "pull_request:" .github/workflows/docker-publish.yml 2>/dev/null || true'
         input: ''
         expected-output: 'pull_request:'
         comparison-method: 'contains'
@@ -124,7 +125,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for workflow_dispatch trigger'
-        command: 'grep "workflow_dispatch:" .github/workflows/docker-publish.yml'
+        command: 'grep -F "workflow_dispatch:" .github/workflows/docker-publish.yml 2>/dev/null || true'
         input: ''
         expected-output: 'workflow_dispatch:'
         comparison-method: 'contains'
@@ -135,7 +136,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for Metadata Outputs Usage'
-        command: 'grep "steps.meta.outputs.tags" .github/workflows/docker-publish.yml'
+        command: 'grep -F "steps.meta.outputs.tags" .github/workflows/docker-publish.yml 2>/dev/null || true'
         input: ''
         expected-output: 'steps.meta.outputs.tags'
         comparison-method: 'contains'
@@ -146,7 +147,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for runs-on'
-        command: 'grep "runs-on: ubuntu-latest" .github/workflows/docker-publish.yml'
+        command: 'ruby -ryaml -e ''begin; data = YAML.load_file(ARGV[0]); jobs = data.is_a?(Hash) && data["jobs"]; target = "$" + "{{ steps.meta.outputs.tags }}"; has_runner = false; bad_tags = false; if jobs.is_a?(Hash); jobs.each_value do |job|; next unless job.is_a?(Hash); has_runner ||= job["runs-on"] == "ubuntu-latest"; steps = job["steps"]; next unless steps.is_a?(Array); steps.each do |step|; next unless step.is_a?(Hash) && step["uses"].to_s.include?("docker/build-push-action"); with = step["with"]; tags = with.is_a?(Hash) && with["tags"]; bad_tags ||= tags.is_a?(String) && tags.include?("steps.meta.outputs.tags") && tags.strip != target; end; end; end; puts "runs-on: ubuntu-latest" if jobs.is_a?(Hash) && has_runner && !bad_tags; rescue StandardError; end'' .github/workflows/docker-publish.yml'
         input: ''
         expected-output: 'runs-on: ubuntu-latest'
         comparison-method: 'contains'
@@ -157,7 +158,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for tags pattern'
-        command: 'grep "v\*" .github/workflows/docker-publish.yml'
+        command: 'grep -F "v*" .github/workflows/docker-publish.yml 2>/dev/null || true'
         input: ''
         expected-output: 'v*'
         comparison-method: 'contains'
@@ -168,7 +169,7 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: 'Check for High Score'
-        command: 'grep "High Score" src/index.html'
+        command: 'grep -F "High Score" src/index.html 2>/dev/null || true'
         input: ''
         expected-output: 'High Score'
         comparison-method: 'contains'
