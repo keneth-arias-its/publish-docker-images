@@ -1,76 +1,76 @@
-## Passo 2: Salire di livello con le Docker Actions
+## Passo 2: Migliora il workflow con le azioni Docker
 
 Ottimo lavoro!
 
-Quel commit che hai appena fatto dovrebbe aver attivato la prima esecuzione del tuo workflow e pubblicato un'immagine Docker nel GitHub Container Registry sotto il tuo account.
+Il commit che hai appena inviato dovrebbe aver avviato il workflow per la prima volta e pubblicato un'immagine Docker su GitHub Container Registry.
 
-Vediamo come scaricare quell'immagine e migliorare il workflow con azioni docker open source.
+Ora scaricherai quell'immagine, la eseguirai nel Codespace e poi migliorerai il workflow con azioni Docker open source.
 
 ### 📖 Teoria: Azioni Docker Specializzate
 
-Proprio come `docker/login-action` che hai appena usato, ci sono anche altre azioni open source che forniscono miglioramenti significativi per i workflow dei container. Diamo un'occhiata ad alcune di esse:
+Oltre a `docker/login-action`, che hai già usato, esistono altre azioni open source utili per i workflow dei container:
 
 | Azione                       | Benefici                                                                                                          |
 | :--------------------------- | :---------------------------------------------------------------------------------------------------------------- |
 | `docker/build-push-action`   | Supporta build multi-piattaforma, segreti, cache remota e funzionalità di build avanzate                          |
-| `docker/setup-qemu-action`   | Abilita la compilazione per diverse architetture (es. ARM64)                                                      |
+| `docker/setup-qemu-action`   | Abilita build per architetture diverse, ad esempio ARM64                                                          |
 | `docker/setup-buildx-action` | Abilita build multi-piattaforma, export della cache e supporto completo a [BuildKit](https://docs.docker.com/build/buildkit/) |
 
 > [!TIP]
 > Queste azioni, come molte altre, sono disponibili nel [GitHub Marketplace](https://github.com/marketplace?query=docker&type=actions).
 
-### ⌨️ Attività: Pull ed esecuzione della tua immagine docker
+### ⌨️ Attività: Scarica ed esegui la tua immagine Docker
 
-Il commit dal tuo passo precedente dovrebbe aver attivato la prima esecuzione del tuo workflow e pubblicato un'immagine Docker nel GitHub Container Registry.
+Il commit del passo precedente dovrebbe aver pubblicato un'immagine Docker su GitHub Container Registry.
 
-Facciamo il pull di quell'immagine ed eseguiamola nel tuo codespace per vedere il gioco in funzione!
+Scarica quell'immagine ed eseguila nel Codespace per vedere il gioco in funzione.
 
 1. Vai alla [pagina principale](https://github.com/{{ full_repo_name }}) del tuo repository
-1. Sul lato destro, sotto la sezione **Packages**, clicca `{{ repo_name | lower }}/stackoverflown`
+1. Sul lato destro, nella sezione **Packages**, fai clic su `{{ repo_name | lower }}/stackoverflown`
 
-   <img width="300" alt="Image showing packages button" src="https://github.com/user-attachments/assets/ada36c5a-f1ce-4125-9008-661976ffaa15" />
+   <img width="300" alt="Pulsante Packages nella pagina del repository" src="https://github.com/user-attachments/assets/ada36c5a-f1ce-4125-9008-661976ffaa15" />
 
 
 1. Copia il comando che inizia con `docker pull ...`
-1. Torna nel tuo codespace, esegui quel comando nel terminale per scaricare l'immagine dal container registry
+1. Torna nel Codespace ed esegui quel comando nel terminale per scaricare l'immagine dal registro container
 1. Verifica che l'immagine sia disponibile localmente eseguendo:
 
    ```bash
    docker images
    ```
 
-1. Lanciamo un container Docker da quell'immagine e vediamo l'app stackoverflown in esecuzione!
+1. Avvia un container Docker da quell'immagine per vedere l'app Stackoverflown in esecuzione:
 
    ```bash
    docker run -p 8080:80 ghcr.io/{{ full_repo_name | lower }}/stackoverflown:main
    ```
 
-1. Puoi accedere all'applicazione attraverso la scheda `Ports` - sulla porta `8080`
+1. Apri l'applicazione dalla scheda `Ports`, sulla porta `8080`.
 
-   <img width="600" alt="Image showing the ports tab" src="https://github.com/user-attachments/assets/80944d79-898a-43f9-94a0-6a9cc153f38d" />
+   <img width="600" alt="Scheda Ports del Codespace" src="https://github.com/user-attachments/assets/80944d79-898a-43f9-94a0-6a9cc153f38d" />
 
 
    > ✨ Fai uno screenshot del gioco in esecuzione, salvalo sul tuo computer e aggiungilo al repository.
 
-1. Salva uno screenshot del gioco in esecuzione, caricalo come un file `png` (ad esempio `stackoverflown.png`) nel repository.
+1. Salva uno screenshot del gioco in esecuzione e caricalo nel repository come file `.png`, ad esempio `stackoverflown.png`.
 
-1. Puoi fermare l'esecuzione dell'applicazione premendo `Ctrl + C` nel terminale
+1. Per fermare l'applicazione, premi `Ctrl + C` nel terminale.
 
 > [!NOTE]
 > Durante questo esercizio, pubblicherai diverse versioni dell'immagine. Puoi sempre usare questi stessi passaggi per scaricare ed eseguire qualsiasi versione tu crei, anche se non esplicitamente richiesto.
 
-### ⌨️ Attività: Sfruttare le Docker Actions open source
+### ⌨️ Attività: Usa le azioni Docker open source
 
-Modifichiamo il workflow per usare le azioni Docker ufficiali per un processo di build più robusto e ricco di funzionalità.
+Ora modifica il workflow per usare le azioni Docker ufficiali. Il processo di build sarà più robusto e più facile da estendere.
 
 1. Apri il file `.github/workflows/docker-publish.yml`.
-1. Rimuovi dalla riga 23 in poi lo step esistente `Build and push Docker image` con i comandi `docker`. Lo sostituiremo con altre Actions open source.
+1. A partire dalla riga 23, rimuovi lo step esistente `Build and push Docker image` con i comandi `docker`. Lo sostituirai con azioni Docker dedicate.
 
-    > ❗ **Attenzione:** Rimuovi solo lo step `Build and push Docker image`. **Non** rimuovere gli step con le Actions `actions/checkout` e `docker/login-action`.
+    > ❗ **Attenzione:** rimuovi solo lo step `Build and push Docker image`. **Non** rimuovere gli step con le azioni `actions/checkout` e `docker/login-action`.
 
-   Ora, aggiungi *ben indentati* questi tre step seguenti al posto dello step `Build and push Docker image`.
+   Al suo posto, aggiungi i tre step seguenti con l'indentazione corretta.
 
-   Questi step imposteranno QEMU per build multi-architettura, imposteranno Docker Buildx, e poi compileranno e invieranno l'immagine Docker con due tag diversi.
+   Questi step configurano QEMU per build multi-architettura, configurano Docker Buildx e pubblicano l'immagine Docker con due tag diversi.
 
    ```yaml
         - name: Set up QEMU
@@ -90,14 +90,14 @@ Modifichiamo il workflow per usare le azioni Docker ufficiali per un processo di
               ghcr.io/{{ full_repo_name | lower }}/stackoverflown:{% raw %}${{ github.sha }}{% endraw %}
    ```
 
-   Assicurati che l'indentazione yaml sia impostata correttamente!
+   Assicurati che l'indentazione YAML sia corretta.
 
-   > 💡 **Suggerimento:** Puoi eseguire il comando `actionlint` nel terminale di codespace per vedere se il workflow è formattato correttamente.
+   > 💡 **Suggerimento:** puoi eseguire `actionlint` nel terminale del Codespace per verificare la formattazione del workflow.
 
    <details>
    <summary>Hai problemi? 🤷 Vedi il file workflow completo</summary><br/>
 
-   Nel caso ne avessi bisogno, ecco il contenuto completo del file workflow aggiornato:
+   Se ti serve un confronto, ecco il contenuto completo del file workflow aggiornato:
 
     ```yaml
     name: Docker Publish
@@ -142,5 +142,5 @@ Modifichiamo il workflow per usare le azioni Docker ufficiali per un processo di
 
    </details>
 
-1. Effettua il commit e il push delle tue modifiche al branch `main`. Mentre invii le tue modifiche Octocat controllerà il tuo lavoro e preparerà il passo successivo in questo esercizio!
-1. Monitora l'esecuzione del tuo workflow nella scheda [Actions](https://github.com/{{ full_repo_name }}/actions) del tuo repository e **assicurati che venga completato con successo**.
+1. Effettua il commit e il push delle modifiche al branch `main`. Dopo il push, Octocat controllerà il tuo lavoro e preparerà il passo successivo.
+1. Monitora l'esecuzione del workflow nella scheda [Actions](https://github.com/{{ full_repo_name }}/actions) del tuo repository e **assicurati che termini con successo**.
